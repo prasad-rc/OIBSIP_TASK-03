@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Futuristic Temperature Converter</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Arial', sans-serif;
+      background: radial-gradient(circle, #000, #111, #222);
+      overflow: hidden;
+      color: #fff;
+    }
+    .background-animation {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      z-index: -1;
+    }
+    .circle {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(0, 255, 255, 0.1);
+      animation: pulse 10s infinite;
+    }
+    .circle:nth-child(1) {
+      width: 300px;
+      height: 300px;
+      top: 10%;
+      left: 20%;
+    }
+    .circle:nth-child(2) {
+      width: 500px;
+      height: 500px;
+      top: 50%;
+      left: 60%;
+      animation-duration: 15s;
+    }
+    .circle:nth-child(3) {
+      width: 700px;
+      height: 700px;
+      bottom: -20%;
+      right: 10%;
+      animation-duration: 20s;
+    }
+    @keyframes pulse {
+      0%, 100% {
+        transform: scale(1);
+        opacity: 0.4;
+      }
+      50% {
+        transform: scale(1.5);
+        opacity: 0.1;
+      }
+    }
+    .converter-container {
+      position: relative;
+      margin: auto;
+      width: 400px;
+      padding: 30px;
+      background: linear-gradient(145deg, #111, #222);
+      border-radius: 15px;
+      box-shadow: 0px 0px 20px 5px #0ff;
+      text-align: center;
+      z-index: 1;
+    }
+    .title {
+      font-size: 2rem;
+      margin-bottom: 20px;
+      color: #0ff;
+      text-shadow: 0 0 10px #0ff;
+    }
+    .input-group {
+      margin: 20px 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    input {
+      width: 100px;
+      padding: 10px;
+      font-size: 1rem;
+      border: none;
+      outline: none;
+      border-radius: 5px;
+      margin-right: 10px;
+      background: #333;
+      color: #0ff;
+      text-align: center;
+      box-shadow: inset 0px 0px 10px #0ff;
+    }
+    select {
+      background: #333;
+      color: #0ff;
+      border: none;
+      padding: 10px;
+      border-radius: 5px;
+      box-shadow: inset 0px 0px 10px #0ff;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 1rem;
+      border: none;
+      outline: none;
+      cursor: pointer;
+      border-radius: 5px;
+      background: #0ff;
+      color: #000;
+      transition: all 0.3s ease;
+      text-shadow: 0 0 5px #000;
+    }
+    button:hover {
+      background: #00f;
+      color: #fff;
+      text-shadow: 0 0 10px #00f;
+    }
+    .result {
+      font-size: 1.2rem;
+      margin-top: 20px;
+      color: #0f0;
+      text-shadow: 0 0 5px #0f0;
+    }
+    .gauge {
+      margin: 20px auto;
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
+      background: #333;
+      box-shadow: 0 0 20px #0ff;
+      position: relative;
+      transition: background 0.5s ease-in-out;
+    }
+    .gauge-inner {
+      position: absolute;
+      top: 10%;
+      left: 10%;
+      width: 80%;
+      height: 80%;
+      background: #000;
+      border-radius: 50%;
+      box-shadow: inset 0px 0px 10px #0ff;
+    }
+    .needle {
+      position: absolute;
+      width: 4px;
+      height: 80px;
+      background: #0ff;
+      top: 50%;
+      left: 50%;
+      transform-origin: bottom;
+      transform: rotate(-45deg);
+      transition: transform 0.5s ease, background 0.5s ease;
+    }
+  </style>
+</head>
+<body>
+  <div class="background-animation">
+    <div class="circle"></div>
+    <div class="circle"></div>
+    <div class="circle"></div>
+  </div>
+
+  <div class="converter-container">
+    <div class="title">Futuristic Temperature Converter</div>
+    <div class="input-group">
+      <input type="number" id="tempInput" placeholder="Enter Temp">
+      <select id="unit">
+        <option value="c">Celsius</option>
+        <option value="f">Fahrenheit</option>
+      </select>
+    </div>
+    <button onclick="convert()">Convert</button>
+    <div class="gauge" id="gauge">
+      <div class="gauge-inner"></div>
+      <div class="needle" id="needle"></div>
+    </div>
+    <div class="result" id="result"></div>
+  </div>
+
+  <script>
+    function convert() {
+      const tempInput = document.getElementById('tempInput').value;
+      const unit = document.getElementById('unit').value;
+      const resultElement = document.getElementById('result');
+      const needle = document.getElementById('needle');
+      const gauge = document.getElementById('gauge');
+
+      if (tempInput === "") {
+        resultElement.textContent = "Please enter a temperature!";
+        return;
+      }
+
+      let result, angle, color;
+      if (unit === "c") {
+        result = (tempInput * 9/5) + 32; // Celsius to Fahrenheit
+        angle = (tempInput / 100) * 90 - 45; // Map to -45 to 45
+        color = tempInput > 30 ? "#f00" : tempInput < 10 ? "#00f" : "#0f0";
+        resultElement.textContent = `${tempInput}°C = ${result.toFixed(2)}°F`;
+      } else {
+        result = (tempInput - 32) * 5/9; // Fahrenheit to Celsius
+        angle = ((result + 100) / 200) * 90 - 45; // Map to -45 to 45
+        color = result > 30 ? "#f00" : result < 10 ? "#00f" : "#0f0";
+        resultElement.textContent = `${tempInput}°F = ${result.toFixed(2)}°C`;
+      }
+      needle.style.transform = `rotate(${angle}deg)`;
+      needle.style.background = color;
+      gauge.style.background = `radial-gradient(circle, ${color}, #000)`;
+    }
+  </script>
+</body>
+</html>
